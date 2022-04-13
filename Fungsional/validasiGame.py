@@ -77,6 +77,24 @@ def isValidHarga(price):
 
     return validHarga
 
+def priceFormat(price):
+    stringPrice = str(price)
+    result = ''
+    for number in stringPrice:
+        if number in "1234567890":
+            result += number
+    return result
+
+def priceFormatNeg(price):
+    stringPrice = str(price)
+    result = ''
+    for number in stringPrice:
+        if number in "-1234567890":
+            result += number
+    return result
+
+priceFormat("200.000")
+
 def isValidStok(stock):
     if lengthFinder(stock) > 0:
         for i in range(lengthFinder(stock)):
