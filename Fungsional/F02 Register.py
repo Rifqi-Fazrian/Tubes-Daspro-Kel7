@@ -9,11 +9,22 @@
 from csvFuncs import *
 from validasiGame import *
 
+def validasiUsername(username):
+    valid = True
+    for letter in username:
+        if letter not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_":
+            valid = False
+            break
+    return valid
+
 def register(user, data):
     if (user[4].lower() == "admin") :
-        nama = input("Masukkan nama : ")
-        username = input("Masukkan username : ")
-        # username harus unik
+        nama = input("Masukkan nama: ")
+        username = input("Masukkan username: ")
+        while not validasiUsername(username):
+            print("Maaf username anda tidak valid, silahkan coba lagi")
+            username = input("Masukkan username: ")
+        # username harus unik dan sesuai spek
         # inisialisasi i
         i = 0
         while (i < lengthFinder(data)) :
