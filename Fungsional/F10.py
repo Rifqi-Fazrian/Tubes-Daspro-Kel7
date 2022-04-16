@@ -1,45 +1,69 @@
-#Program mencari game
+# Program mencari game yang dimiliki user
 
 from validasiGame import *
 from csvFuncs import *
 
-def printGame(listGame, i):
-    print(f'ID Game : {listGame[i][0]}')
-    print(f'Nama Game : {listGame[i][1]}')
-    print(f'Kategori Game : {listGame[i][2]}')
-    print(f'Tahun Terbit Game : {listGame[i][3]}')
-    print(f'Harga Game : {listGame[i][4]}')
+def printGame(print_inventory, i):
+    print(f'ID Game : {print_inventory[i][0]}')
+    print(f'Nama Game : {print_inventory[i][1]}')
+    print(f'Kategori Game : {print_inventory[i][2]}')
+    print(f'Tahun Terbit Game : {print_inventory[i][3]}')
+    print(f'Harga Game : {print_inventory[i][4]}')
     print("---------------")
     print()
 
+loggedUserID = 1        #TODO implementasikan logged in user ID
+gameStore = csvReader("game.csv", delimiter=";")
+ownership = csvReader("kepemilikan.csv", delimiter=";")
 
+def IDLister(kepemilikan):
+    IDlist = []
+    for i in range(1,lengthFinder(ownership)):
+        IDlist += [kepemilikan[i][1]]
+    return IDlist
 
-search_my_game = csvReader('game.csv')
-cariId = input("ID Game : ")
-cariTahun = input('Tahun Game : ')
-found = False
+list_of_ids = IDLister(ownership)
 
-print("Daftar game pada inventory yang memenuhi kriteria:")
+def search_games(games):
+    cariID = input("Masukkan ID game: ")
+    cariTahun = input("Masukkan tahun rilis game: ")
+    gameList = []
+    found = False
+    for i in range(1, lengthFinder(games)):
+        if cariTahun == '' and cariID != '':        # hanya ada filter ID
+            if games[i][0] == cariID:
+                gameList += [games[i]]
+                found = True
 
-for i in range (1,lengthFinder(search_my_game)):
-    if cariTahun == '' and cariId != '':        # hanya ada filter ID
-        if search_my_game[i][0] == cariId:
-            printGame(search_my_game, i)
+        elif cariTahun != '' and cariID == '':      # hanya ada filter tahun
+            if str(games[i][3]) == str(cariTahun):
+                gameList += [games[i]]
+                found = True
+
+        elif cariTahun != '' and cariID != '':      # kedua filter jalan
+            if str(games[i][3]) == str(cariTahun) and games[i][0] == cariID:
+                gameList += [games[i]]
+                found = True
+
+        else:  # tidak ada filter
+            gameList += [games[i]]
             found = True
 
-    elif cariTahun != '' and cariId == '':      # hanya ada filter tahun
-        if str(search_my_game[i][3]) == str(cariTahun):
-            printGame(search_my_game, i)
-            found = True
+    if found:
+        return gameList
+    else:
+        return "Tidak ada game yang memenuhi kriteria"
 
-    elif cariTahun != '' and cariId != '':      # kedua filter jalan
-        if str(search_my_game[i][3]) == str(cariTahun) and search_my_game[i][0] == cariId:
-            printGame(search_my_game, i)
-            found = True
 
-    else:   # tidak ada filter
-        printGame(search_my_game, i)
-        found = True
+gameFound = search_games(gameStore)     # data game yang memenuhi kriteria
 
-if not found:
-    print("Tidak ada game yang memenuhi kriteria tersebut")
+foundGames = 0
+for i in range(lengthFinder(gameFound)):
+    for j in range(lengthFinder(ownership)):
+        if gameFound[i][0] == ownership[j][0]:
+            if str(loggedUserID) in list_of_ids[j-1]:
+                foundGames += 1
+                printGame(gameFound, i)
+if foundGames == 0:
+    print("Tidak ada game yang memenuhi kriteria")
+
