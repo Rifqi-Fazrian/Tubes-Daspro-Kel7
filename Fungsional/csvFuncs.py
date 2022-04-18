@@ -58,6 +58,20 @@ def findMin(dicari):
     return min
 
 
+def write_csv(filename, to_write):
+    with open(filename, "w") as file:
+        baris = lengthFinder(to_write)
+        kolom = lengthFinder(to_write[0])            # Jumlah kolom sama pada tiap baris
+        for i in range(baris):
+            for j in range(kolom):
+                file.write(str(to_write[i][j]))
+                if j < kolom-1:
+                    file.write(";")                 # pemisah titik koma
+            if i < baris-1:
+                file.write("\n")                    # newline ditambahkan pada file
+
+
+
 
 
 
